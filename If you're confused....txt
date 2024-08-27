@@ -1,0 +1,28 @@
+
+Hi there, I see you're confused (or curious).
+Here are some questions I've anticipated you may ask.
+
+1.) Umm, I'm getting a "Windows protected your PC" warning... is this a virus?
+	- No, it is not a virus. Unfortunately, this is expected behavior. Windows takes caution with .bat files which is why you see that error. Also, since the .bat file doesn't have a publisher and was downloaded from the Internet, Windows treats it with even more caution. To be able to run it, click the "more infor" text and then "Run Anyway" button.
+
+2.) Are you sure it's safe?
+	- Yes, I pinky promise :). Read through the source code if you'd like. Be careful if you modify it, though, as it copies files into the critical path (System/System32).
+
+3.) How do I run it?
+	- Unzip/extract the archive and run the "Glut Installer.bat" file (as Administrator; right-click the file then 'Run as Administrator')! If you receive the "Windows protected your PC" warning (see question 1), click the "more info" text and then "Run Anyway" button.
+
+4.) Why are there two files and not just one PowerShell script?
+	- If only it were that easy... Well, there's this thing called ExecutionPolicy that manages which PowerShell scripts are allowed to run.
+	There are multiple policies such as Signed, RemoteSigned, Restricted, etc. Most PCs are defaulted to Restricted, meaning you can run only scripts that you write yourself. If you're in this policy, you cannot run external scripts (such as this one).
+
+5.) So, what does the .bat file do?
+	- It's a workaround. Basically - oddly enough - even if your ExecutionPolicy is set to Restricted, Windows will allow you to run a single PowerShell command at a time. The batch file runs the "powershell" command, spawning a new PowerShell process to execute the "CopyFiles.ps1" PowerShell script. Specifically, the full command is: "POWERSHELL -ExecutionPolicy Bypass -File "%copyFilesPath%"", where the "-ExecutionPolicy Bypass" argument allows the script to run without being blocked by the current execution policy.
+
+6.) Why not just the .bat file, then?
+	- Well, because batch scripting is a larger undertaking when compared PowerShell scripting. Many of the functions I use (Test-Path and Copy-Item, for example) are Powershell commands. These could be manually coded (or called as successive PowerShell commands) in batch, but it becomes quite cumbersome, especially since the result of each would need to be stored in a variable. Also, the batch syntax is harder to manage (take a look at running a command and saving the result to a variable below - you literally have to use a for loop construction). It's also less used nowadays and PowerShell is becoming more commonplace. In fact, Microsoft even recommends migrating from batch to PowerShell since it's actively being maintained and documented. If you're curious as to how you would run a command in batch and store the variable, this is what it would look like:
+		FOR /F %%F IN ('powershell -Command "Get-ExecutionPolicy -Scope CurrentUser"') DO SETX policyScope "%%F" > nul
+	the equivalent in PowerShell would be:
+		$policyScope = Get-ExecutionPolicy -Scope CurrentUser
+
+7.) This is a lot, why did you go through all of this for such a simple task?
+	- Good question ;). It's what developers tend to do - take something really simple and make it really complex. Did I spend a lot longer coding this when I could've just done the tasks manually? Yeah...but we love automation! Plus, I learned some new things in PowerShell so that's fun!
